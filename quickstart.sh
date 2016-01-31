@@ -1,5 +1,5 @@
 #start mosquitto deamon 
-mosquitto -d
+# mosquitto -d
 
 cd /home/pi/py-beacon
 #start beacon collactor and emitter

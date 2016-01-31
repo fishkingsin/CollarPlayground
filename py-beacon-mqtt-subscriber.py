@@ -37,17 +37,18 @@ def on_message(client, userdata, msg):
 	# print ('obj[id]: ' + obj['id'])
 	# print (deviceID == obj['id'])
 	if (deviceID == obj['id']) == False :
-		deviceID = obj['id']
+		if isProcessRunning('mpg321') == False:
+			deviceID = obj['id']
 		if deviceID == "fc:ac:48:93:85:07":
 			print("do this>>>>>>>>>");
-			if isProcessRunning('omxplayer') == False:
-				os.system('omxplayer /home/pi/example/mp3s/Chapter_1.mp3 &')
+			if isProcessRunning('mpg321') == False:
+				os.system('mpg321 /home/pi/example/mp3s/Chapter_1.mp3 &')
 			# play mp3s/chapter1
 			##do this
-		if deviceID == "e6:04:aa:bd:67:d2":
+		elif deviceID == "e6:04:aa:bd:67:d2":
 			print("do that---------");
-			if isProcessRunning('omxplayer') == False:
-				os.system('omxplayer /home/pi/example/mp3s/Chapter_2.mp3 &')
+			if isProcessRunning('mpg321') == False:
+				os.system('mpg321 /home/pi/example/mp3s/Chapter_2.mp3 &')
 			#do that
 			# play mp3s/chapter3
 
