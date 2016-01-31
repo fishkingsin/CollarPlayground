@@ -42,6 +42,5 @@ while(True):
   
   if(currentmillis>startmillis+LIMIT):
     # should fire timeout
-    os.cmd
     startmillis = currentmillis;
   time.sleep(0.01)
