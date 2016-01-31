@@ -21,5 +21,5 @@ def create_timed_rotating_log(path):
  
 #----------------------------------------------------------------------
 if __name__ == "__main__":
-    log_file = "timed_test.log"
+    log_file = "/home/pi/example/timed_test.log"
     create_timed_rotating_log(log_file)

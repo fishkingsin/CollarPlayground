@@ -2,8 +2,10 @@
 
 import time
 import datetime
+import rx
+from rx import Observable, Observer
 from Adafruit_7Segment import SevenSegment
-import os
+
 
 # LIMIT = 1800000
 LIMIT = 65000
@@ -41,7 +43,5 @@ while(True):
   segment.setColon(second % 2)              # Toggle colon at 1Hz
   
   if(currentmillis>startmillis+LIMIT):
-    # should fire timeout
-    os.cmd
     startmillis = currentmillis;
-  time.sleep(0.01)
+  time.sleep(0.001)

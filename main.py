@@ -23,7 +23,7 @@ blescan.hci_enable_le_scan(sock)
 
 def init():
 	# create logger with 'spam_application'
-	logger = logging.getLogger('spam_application')
+	logger = logging.getLogger('main')
 	logger.setLevel(logging.DEBUG)
 	# create file handler which logs even debug messages
 	# fh = logging.FileHandler('spam.log')
