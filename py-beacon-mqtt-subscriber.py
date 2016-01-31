@@ -16,7 +16,7 @@ def on_message(client, userdata, msg):
     if obj['id']=="fc:ac:48:93:85:07":
     	print("do this>>>>>>>>>");
     	##do this
-    else if obj['id']=="e6:04:aa:bd:67:d2:
+    if obj['id']=="e6:04:aa:bd:67:d2":
     	print("do that---------");
     	#do that
 
