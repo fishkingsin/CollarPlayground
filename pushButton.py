@@ -7,6 +7,7 @@ import os
 GPIO.setmode(GPIO.BCM)
 segment = SevenSegment(address=0x70)
 GPIO.setup(18, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.setup(16, GPIO.OUT)
 
 while True:
     input_state = GPIO.input(18)
@@ -17,8 +18,10 @@ while True:
         segment.writeDigit(2,0)
         segment.writeDigit(3,1)
         time.sleep(0.2)
+        GPIO.output(16,True)
     else:
     	segment.writeDigit(0,0)
         segment.writeDigit(1,0)
         segment.writeDigit(2,0)
         segment.writeDigit(3,2)
+        GPIO.output(16,False)

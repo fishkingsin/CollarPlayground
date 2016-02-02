@@ -8,5 +8,5 @@ sudo python ./emitter.py &
 
 #gotto working directory
 cd /home/pi/example
-sudo python counter.py &
 python py-beacon-mqtt-subscriber.py &
+sudo python counter.py &
