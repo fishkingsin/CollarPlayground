@@ -4,8 +4,11 @@ import time
 import datetime
 from Adafruit_7Segment import SevenSegment
 import os
-
+import rx
+import RPi.GPIO as GPIO
 # LIMIT = 1800000
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(16, GPIO.OUT)
 LIMIT = 65000
 # ===========================================================================
 # Clock Example
