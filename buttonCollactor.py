@@ -7,7 +7,7 @@ import os
 GPIO.setmode(GPIO.BCM)
 segment = SevenSegment(address=0x70)
 GPIO.setup(18, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-
+pressed=False
 while True:
     input_state = GPIO.input(18)
     if input_state == False:
