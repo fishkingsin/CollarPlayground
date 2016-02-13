@@ -4,6 +4,12 @@ import os
 import subprocess
 import re
 from subprocess import Popen
+from pprint import pprint
+#load data
+eventmap=[]
+
+with open('eventmap.json') as data_file:    
+	eventmap = json.load(data_file)
 
 def findProcess( processName ):
 	ps = subprocess.Popen("ps | grep "+processName, shell=True, stdout=subprocess.PIPE)
@@ -36,21 +42,29 @@ def on_message(client, userdata, msg):
 	# print ('deviceID: ' + deviceID)
 	# print ('obj[id]: ' + obj['id'])
 	# print (deviceID == obj['id'])
-	if (deviceID == obj['id']) == False :
-		if isProcessRunning('mpg321') == False:
-			deviceID = obj['id']
-		if deviceID == "fc:ac:48:93:85:07":
-			print("do this>>>>>>>>>");
-			if isProcessRunning('mpg321') == False:
-				os.system('mpg321 /home/pi/example/mp3s/Chapter_1.mp3 &')
-			# play mp3s/chapter1
-			##do this
-		elif deviceID == "e6:04:aa:bd:67:d2":
-			print("do that---------");
-			if isProcessRunning('mpg321') == False:
-				os.system('mpg321 /home/pi/example/mp3s/Chapter_2.mp3 &')
-			#do that
-			# play mp3s/chapter3
+	global eventmap
+	for _data in eventmap :
+		if(_data['uuid'] == obj['id']):
+			print _data;
+			print _data['status'];
+			# check played? check skipped?
+			# do something 
+
+	# if (deviceID == obj['id']) == False :
+	# 	if isProcessRunning('mpg321') == False:
+	# 		deviceID = obj['id']
+	# 	if deviceID == "fc:ac:48:93:85:07":
+	# 		print("do this>>>>>>>>>");
+	# 		if isProcessRunning('mpg321') == False:
+	# 			os.system('mpg321 /home/pi/example/mp3s/Chapter_1.mp3 &')
+	# 		# play mp3s/chapter1
+	# 		##do this
+	# 	elif deviceID == "e6:04:aa:bd:67:d2":
+	# 		print("do that---------");
+	# 		if isProcessRunning('mpg321') == False:
+	# 			os.system('mpg321 /home/pi/example/mp3s/Chapter_2.mp3 &')
+	# 		#do that
+	# 		# play mp3s/chapter3
 
 client = mqtt.Client()
 client.on_connect = on_connect
