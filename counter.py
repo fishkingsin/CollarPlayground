@@ -38,7 +38,7 @@ class BuzzerObserver(Observer):
 			elif (x<=10):
 				startThread(0.5);
 			
-			print("Got: %s" % x)
+			# print("Got: %s" % x)
 		def on_error(self, e):
 			print("Got error: %s" % e)
 				
