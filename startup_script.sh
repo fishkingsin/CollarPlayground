@@ -29,7 +29,7 @@ echo "unmount /media/usb"
 sudo umount /media/usb
 echo "done"
 #start core process
-start mosquitto deamon 
+#start mosquitto deamon 
 mosquitto -d
 
 cd /home/pi/py-beacon
