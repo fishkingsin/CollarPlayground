@@ -17,6 +17,7 @@ find /dev/  -name "sda1" -print0 | xargs -0 -r -I file mount file /media/usb
 sleep 2
 for i in /media/usb/contents/* 
 do
+	echo "cp \"$i\" /home/pi/CollarPlayground/"
 	cp "$i" /home/pi/CollarPlayground/
 done
 sleep 2
