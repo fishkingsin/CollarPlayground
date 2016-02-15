@@ -136,7 +136,9 @@ def on_message(client, userdata, msg):
 				currentStatus = updateEventmapStatus(deviceID, 'playing')
 			fileName = getEventMapFileName(eventmap, uuid)
 			playFile(fileName)
-
+	else:
+		if isProcessRunning('mpg321') == False:
+			currentStatus = updateEventmapStatus(deviceID, 'completed')
 		# for _data in eventmap:
 
 		#     if(_data[uuid] == obj['id']):
