@@ -31,8 +31,8 @@ def startThread(delay):
 	
 class BuzzerObserver(Observer):
 		def on_next(self, x):
-			if(x%60==0):
-				startThread(2);
+			if(x > 60 and x%60*5==0):
+				startThread(1);
 			elif (x < 60 and x%10==0 and x != 10):
 				startThread(1);
 			elif (x<=10):

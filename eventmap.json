@@ -1,152 +1,33 @@
 [
   {
-    "uuid": "0048029C1301437002702102",
+    "uuid": "ca:83:bb:02:60:18",
     "status":"never",
     "files": [
       {
-        "fileName": "mp3/Chapter1_0.mp3"
+        "fileName": "mp3/Chapter_1.mp3"
       },
       {
-        "fileName": "mp3/Chapter1_1.mp3"
+        "fileName": "mp3/Chapter_1.mp3"
       },
       {
-        "fileName": "mp3/Chapter1_2.mp3"
+        "fileName": "mp3/Chapter_1.mp3"
       }
     ]
   },
   {
-    "uuid": "0048029C1301437002702102",
+    "uuid": "e6:04:aa:bd:67:d2",
     "status":"never",
     "files": [
       {
-        "fileName": "mp3/Chapter1_0.mp3"
+        "fileName": "mp3/Chapter_2.mp3"
       },
       {
-        "fileName": "mp3/Chapter1_1.mp3"
+        "fileName": "mp3/Chapter_2.mp3"
       },
       {
-        "fileName": "mp3/Chapter1_2.mp3"
+        "fileName": "mp3/Chapter_2.mp3"
       }
     ]
-  },
-  {
-    "uuid": "0048029C1301437002702102",
-    "status":"never",
-    "files": [
-      {
-        "fileName": "mp3/Chapter1_0.mp3"
-      },
-      {
-        "fileName": "mp3/Chapter1_1.mp3"
-      },
-      {
-        "fileName": "mp3/Chapter1_2.mp3"
-      }
-    ]
-  },
-  {
-    "uuid": "0048029C1301437002702102",
-    "status":"never",
-    "files": [
-      {
-        "fileName": "mp3/Chapter1_0.mp3"
-      },
-      {
-        "fileName": "mp3/Chapter1_1.mp3"
-      },
-      {
-        "fileName": "mp3/Chapter1_2.mp3"
-      }
-    ]
-  },
-  {
-    "uuid": "0048029C1301437002702102",
-    "status":"never",
-    "files": [
-      {
-        "fileName": "mp3/Chapter1_0.mp3"
-      },
-      {
-        "fileName": "mp3/Chapter1_1.mp3"
-      },
-      {
-        "fileName": "mp3/Chapter1_2.mp3"
-      }
-    ]
-  },
-  {
-    "uuid": "0048029C1301437002702102",
-    "status":"never",
-    "files": [
-      {
-        "fileName": "mp3/Chapter1_0.mp3"
-      },
-      {
-        "fileName": "mp3/Chapter1_1.mp3"
-      },
-      {
-        "fileName": "mp3/Chapter1_2.mp3"
-      }
-    ]
-  },
-  {
-    "uuid": "0048029C1301437002702102",
-    "status":"never",
-    "files": [
-      {
-        "fileName": "mp3/Chapter1_0.mp3"
-      },
-      {
-        "fileName": "mp3/Chapter1_1.mp3"
-      },
-      {
-        "fileName": "mp3/Chapter1_2.mp3"
-      }
-    ]
-  },
-  {
-    "uuid": "0048029C1301437002702102",
-    "status":"never",
-    "files": [
-      {
-        "fileName": "mp3/Chapter1_0.mp3"
-      },
-      {
-        "fileName": "mp3/Chapter1_1.mp3"
-      },
-      {
-        "fileName": "mp3/Chapter1_2.mp3"
-      }
-    ]
-  },
-  {
-    "uuid": "0048029C1301437002702102",
-    "status":"never",
-    "files": [
-      {
-        "fileName": "mp3/Chapter1_0.mp3"
-      },
-      {
-        "fileName": "mp3/Chapter1_1.mp3"
-      },
-      {
-        "fileName": "mp3/Chapter1_2.mp3"
-      }
-    ]
-  },
-  {
-    "uuid": "0048029C1301437002702102",
-    "status":"never",
-    "files": [
-      {
-        "fileName": "mp3/Chapter1_0.mp3"
-      },
-      {
-        "fileName": "mp3/Chapter1_1.mp3"
-      },
-      {
-        "fileName": "mp3/Chapter1_2.mp3"
-      }
-    ]
-  } 
+  }
+  
 ]
