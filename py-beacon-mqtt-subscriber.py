@@ -9,10 +9,10 @@ from subprocess import Popen
 from pprint import pprint
 # load data
 eventmap = []
-status='status'
-uuid='uuid'
-files='files'
-fileName='fileName'
+key_status='status'
+key_uuid='uuid'
+key_files='files'
+key_fileName='fileName'
 # status never,playing,completed,status
 never='never'
 playing='playing'
@@ -54,40 +54,45 @@ def on_connect(client, userdata, rc):
 # The callback for when a PUBLISH message is received from the server.
 
 
-def getEventMapFileName(eventmap, uuid):
+def getEventMapFileName(eventmap, input_uuid):
+	print 'getEventMapFileName '+input_uuid
+	fileName = "no file"
 	for _data in eventmap:
-		if(_data[uuid] == uuid) == True:
-			if(_data[status]==never)==True:
-				fileName = _data[files][0][fileName]
-			elif(_data[status]==completed)==True:
-				fileName = _data[files][1][fileName]
-			elif(_data[status]==skipped)==True:
-				fileName = _data[files][2][fileName]
+		if(_data[key_uuid] == input_uuid) == True:
+			if(_data[key_status]==never)==True:
+				fileName = _data[key_files][0][key_fileName]
+			elif(_data[key_status]==completed)==True:
+				fileName = _data[key_files][1][key_fileName]
+			elif(_data[key_status]==skipped)==True:
+				fileName = _data[key_files][2][key_fileName]
 			else:
-				fileName = _data[files][0][fileName]
+				fileName = _data[key_files][0][key_fileName]
+			
 			print "playing file " + fileName
-			return fileName
+	return fileName
 
 
 def playFile(filePath):
+	print filePath
 	cmd = 'mpg321 ' + filePath + ' &'
 	print cmd
 	os.system(cmd)
 
 
 
-def getEventmapStatus(uuid):
+def getEventmapStatus(input_uuid):
 	global eventmap
 	for _data in eventmap:
-		if (_data['uuid'] == uuid) == True:
+		if (_data[key_uuid] == input_uuid) == True:
 			return _data['status']
+	return ""
 
 
-def updateEventmapStatus(uuid, status):
+def updateEventmapStatus(input_uuid, status):
 	global eventmap
-	print eventmap
+	# print eventmap
 	for _data in eventmap:
-		if (_data[uuid] == uuid) == True:
+		if (_data[key_uuid] == input_uuid) == True:
 			_data['status'] = status
 			print eventmap
 			return _data['status']
@@ -141,7 +146,7 @@ def on_message(client, userdata, msg):
 			currentStatus = updateEventmapStatus(deviceID, 'completed')
 		# for _data in eventmap:
 
-		#     if(_data[uuid] == obj['id']):
+		#     if(_data[key_uuid] == obj['id']):
 		#         # before that udpate status
 		#         deviceID = obj['id']
 		#         print _data
