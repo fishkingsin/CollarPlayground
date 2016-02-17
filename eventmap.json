@@ -7,10 +7,10 @@
         "fileName": "mp3/Chapter_1.mp3"
       },
       {
-        "fileName": "mp3/Chapter_1.mp3"
+        "fileName": "mp3/completed.mp3"
       },
       {
-        "fileName": "mp3/Chapter_1.mp3"
+        "fileName": "mp3/skipped.mp3"
       }
     ]
   },
@@ -22,10 +22,10 @@
         "fileName": "mp3/Chapter_2.mp3"
       },
       {
-        "fileName": "mp3/Chapter_2.mp3"
+        "fileName": "mp3/completed.mp3"
       },
       {
-        "fileName": "mp3/Chapter_2.mp3"
+        "fileName": "mp3/skipped.mp3"
       }
     ]
   }

@@ -74,9 +74,12 @@ def getEventMapFileName(eventmap, input_uuid):
 
 def playFile(filePath):
 	print filePath
-	cmd = 'mpg321 ' + filePath + ' &'
-	print cmd
-	os.system(cmd)
+	if(os.path.isfile(filePath))==True:
+		cmd = 'mpg321 ' + filePath + ' &'
+		print cmd
+		os.system(cmd)
+	else :
+		print "error open file :"+filePath
 
 
 
