@@ -13,8 +13,14 @@ do
 	sleep 1
 done
 sleep 1
+
 #startup jingle
 mpg321 /home/pi/CollarPlayground/Mac_Startup_Sound.mp3 &
+
+cd /home/pi/CollarPlayground/
+echo "sync master"
+git pull origin master
+sleep 1
 #mount disk if avaiable
 echo "mount /media/usb"
 find /dev/  -name "sda1" -print0 | xargs -0 -r -I file mount file /media/usb
