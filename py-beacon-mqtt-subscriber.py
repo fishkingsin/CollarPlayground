@@ -113,9 +113,9 @@ def on_message(client, userdata, msg):
 	# compair the current uuid
 	# if uuid does not match skip the process
 	obj_uuid = obj['id']
-	value=obj['val']
+	value=float(obj['val'])
 	if(value>-75) == True:
-		print 'value '+value 
+		print 'value ' + str(value )
 		if (deviceID == obj_uuid) == False:
 			if isProcessRunning('mpg321') == False:
 				print "play track directly"
