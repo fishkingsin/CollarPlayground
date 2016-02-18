@@ -112,41 +112,44 @@ def on_message(client, userdata, msg):
 	global currentStatus
 	# compair the current uuid
 	# if uuid does not match skip the process
-	uuid = obj['id']
-	if (deviceID == uuid) == False:
-		if isProcessRunning('mpg321') == False:
-			print "play track directly"
-			deviceID = uuid
-			
-			print 'event map status ' + getEventmapStatus(deviceID)
-			currentStatus = getEventmapStatus(deviceID)
-			if( currentStatus == 'never') == True:
-				print 'never play'
-				currentStatus = updateEventmapStatus(deviceID, 'playing')
-			elif(currentStatus == 'playing') == True:
-				print 'playing'
-				currentStatus = updateEventmapStatus(deviceID, 'completed')
-			elif(currentStatus== 'completed') == True:
-				print 'paly completed note'
-			elif(currentStatus == 'skipped') == True:
-				print 'play skipped note'
+	obj_uuid = obj['id']
+	value=obj['val']
+	if(value>-75) == True:
+		print 'value '+value 
+		if (deviceID == obj_uuid) == False:
+			if isProcessRunning('mpg321') == False:
+				print "play track directly"
+				deviceID = obj_uuid
 				
-			fileName = getEventMapFileName(eventmap, deviceID)
-			playFile(fileName)
-			print 'event map status ' + getEventmapStatus(deviceID)
+				print 'event map status ' + getEventmapStatus(deviceID)
+				currentStatus = getEventmapStatus(deviceID)
+				if( currentStatus == 'never') == True:
+					print 'never play'
+					currentStatus = updateEventmapStatus(deviceID, 'playing')
+				elif(currentStatus == 'playing') == True:
+					print 'playing'
+					currentStatus = updateEventmapStatus(deviceID, 'completed')
+				elif(currentStatus== 'completed') == True:
+					print 'paly completed note'
+				elif(currentStatus == 'skipped') == True:
+					print 'play skipped note'
+					
+				fileName = getEventMapFileName(eventmap, deviceID)
+				playFile(fileName)
+				print 'event map status ' + getEventmapStatus(deviceID)
+			else:
+				print "skip current track"
+				currentStatus = updateEventmapStatus(deviceID, 'skipped')
+				os.system('pkill mpg321')
+				deviceID = obj_uuid
+				if( currentStatus == 'never') == True:
+					print 'never play'
+					currentStatus = updateEventmapStatus(deviceID, 'playing')
+				fileName = getEventMapFileName(eventmap, obj_uuid)
+				playFile(fileName)
 		else:
-			print "skip current track"
-			currentStatus = updateEventmapStatus(deviceID, 'skipped')
-			os.system('pkill mpg321')
-			deviceID = uuid
-			if( currentStatus == 'never') == True:
-				print 'never play'
-				currentStatus = updateEventmapStatus(deviceID, 'playing')
-			fileName = getEventMapFileName(eventmap, uuid)
-			playFile(fileName)
-	else:
-		if isProcessRunning('mpg321') == False:
-			currentStatus = updateEventmapStatus(deviceID, 'completed')
+			if isProcessRunning('mpg321') == False:
+				currentStatus = updateEventmapStatus(deviceID, 'completed')
 		# for _data in eventmap:
 
 		#     if(_data[key_uuid] == obj['id']):
