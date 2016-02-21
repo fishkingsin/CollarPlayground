@@ -183,43 +183,43 @@ def on_message(client, userdata, msg):
 	result = appendBuffer(obj)
 	if mqttclnt and result:		
 		mqttclnt.publish("/lab3/ble/result/", str(result['id']))
-
-	obj_uuid = result['id']
-	
-	if (deviceID == obj_uuid) == False:
-		if isProcessRunning('mpg321') == False:
-			print "play track directly"
-			deviceID = obj_uuid
-			
-			print 'event map status ' + getEventmapStatus(deviceID)
-			currentStatus = getEventmapStatus(deviceID)
-			if( currentStatus == 'never') == True:
-				print 'never play'
-				currentStatus = updateEventmapStatus(deviceID, 'playing')
-			elif(currentStatus == 'playing') == True:
-				print 'playing'
-				currentStatus = updateEventmapStatus(deviceID, 'completed')
-			elif(currentStatus== 'completed') == True:
-				print 'paly completed note'
-			elif(currentStatus == 'skipped') == True:
-				print 'play skipped note'
+	if result:
+		obj_uuid = result['id']
+		
+		if (deviceID == obj_uuid) == False:
+			if isProcessRunning('mpg321') == False:
+				print "play track directly"
+				deviceID = obj_uuid
 				
-			fileName = getEventMapFileName(eventmap, deviceID)
-			playFile(fileName)
-			print 'event map status ' + getEventmapStatus(deviceID)
-		# else:
-		# 	print "skip current track"
-		# 	currentStatus = updateEventmapStatus(deviceID, 'skipped')
-		# 	os.system('pkill mpg321')
-		# 	deviceID = obj_uuid
-		# 	if( currentStatus == 'never') == True:
-		# 		print 'never play'
-		# 		currentStatus = updateEventmapStatus(deviceID, 'playing')
-		# 	fileName = getEventMapFileName(eventmap, obj_uuid)
-		# 	playFile(fileName)
-	else:
-		if isProcessRunning('mpg321') == False:
-			currentStatus = updateEventmapStatus(deviceID, 'completed')
+				print 'event map status ' + getEventmapStatus(deviceID)
+				currentStatus = getEventmapStatus(deviceID)
+				if( currentStatus == 'never') == True:
+					print 'never play'
+					currentStatus = updateEventmapStatus(deviceID, 'playing')
+				elif(currentStatus == 'playing') == True:
+					print 'playing'
+					currentStatus = updateEventmapStatus(deviceID, 'completed')
+				elif(currentStatus== 'completed') == True:
+					print 'paly completed note'
+				elif(currentStatus == 'skipped') == True:
+					print 'play skipped note'
+					
+				fileName = getEventMapFileName(eventmap, deviceID)
+				playFile(fileName)
+				print 'event map status ' + getEventmapStatus(deviceID)
+			# else:
+			# 	print "skip current track"
+			# 	currentStatus = updateEventmapStatus(deviceID, 'skipped')
+			# 	os.system('pkill mpg321')
+			# 	deviceID = obj_uuid
+			# 	if( currentStatus == 'never') == True:
+			# 		print 'never play'
+			# 		currentStatus = updateEventmapStatus(deviceID, 'playing')
+			# 	fileName = getEventMapFileName(eventmap, obj_uuid)
+			# 	playFile(fileName)
+		else:
+			if isProcessRunning('mpg321') == False:
+				currentStatus = updateEventmapStatus(deviceID, 'completed')
 
 def init():
 	"""Read config file"""
