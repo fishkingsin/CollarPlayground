@@ -7,7 +7,15 @@ import subprocess
 import re
 from subprocess import Popen
 from pprint import pprint
+import collections
+from itertools import groupby
+from operator import itemgetter
+from collections import Counter
+import re
+from pprint import pprint
 # load data
+
+
 eventmap = []
 key_status='status'
 key_uuid='uuid'
@@ -18,6 +26,11 @@ never='never'
 playing='playing'
 completed='completed'
 skipped='skipped'
+MAX_LENGTH = 3
+circularBuffer = collections.deque(maxlen=MAX_LENGTH)
+appendCount=0
+mqttclnt = None
+conf = []
 with open('eventmap.json') as data_file:
 	eventmap = json.load(data_file)
 
@@ -55,7 +68,7 @@ def on_connect(client, userdata, rc):
 
 
 def getEventMapFileName(eventmap, input_uuid):
-	print 'getEventMapFileName '+input_uuid
+	# print 'getEventMapFileName '+input_uuid
 	fileName = "no file"
 	for _data in eventmap:
 		if(_data[key_uuid] == input_uuid) == True:
@@ -93,13 +106,65 @@ def getEventmapStatus(input_uuid):
 
 def updateEventmapStatus(input_uuid, status):
 	global eventmap
+	output_uuid = None
 	# print eventmap
 	for _data in eventmap:
 		if (_data[key_uuid] == input_uuid) == True:
 			_data['status'] = status
-			print eventmap
+			# print eventmap
 			return _data['status']
 
+# def most_common(lst):
+# 	print lst
+# 	return max(set(lst), key=lst.count)
+def most_common(L):
+	grouper = itemgetter("id")
+
+	maxItem = max(L, key=lambda x:x['val'])
+	
+	# print "============maxItem============"
+	# pprint(maxItem)
+	# print "============maxItem============"
+
+	result = []
+	for key, grp in groupby(sorted(L, key = grouper), grouper):
+
+		temp_dict = {'id': key, 'val': 0}
+		temp_list = [float(item["val"]) for item in grp]
+		temp_dict["qty"] = sum(temp_list)
+		temp_dict["avg"] = temp_dict["qty"] / len(temp_list)
+		temp_dict["val"] = temp_list
+		result.append(temp_dict)
+
+	averageMax = max(result, key=lambda x:x['avg'])
+	print "============averageMax============"
+	print averageMax["id"] + " | avg: " + str(averageMax["avg"])
+	print "============averageMax============"
+	return averageMax
+
+def appendBuffer(input_uuid):
+	global appendCount
+	# print len(circularBuffer)
+	output_uuid = None
+	if(appendCount < MAX_LENGTH ):
+		circularBuffer.append(input_uuid)
+		appendCount+=1
+		# print '------------------------------------'
+		# print circularBuffer
+		# most_common(circularBuffer)
+		# print '------------------------------------'
+
+	else:
+		appendCount=0
+		# output_uuid = circularBuffer
+		
+		print '====================================='
+		output_uuid = most_common(circularBuffer)
+		# print '---->>>>>>>>>>>>>>> : '
+		# pprint(result)
+		print '====================================='
+		circularBuffer.clear()
+	return output_uuid
 
 def on_message(client, userdata, msg):
 	# print(msg.topic+" "+str(msg.payload))
@@ -112,82 +177,95 @@ def on_message(client, userdata, msg):
 	global currentStatus
 	# compair the current uuid
 	# if uuid does not match skip the process
-	obj_uuid = obj['id']
+	
 	value=float(obj['val'])
-	if(value>-75) == True:
-		print 'value ' + str(value )
-		if (deviceID == obj_uuid) == False:
-			if isProcessRunning('mpg321') == False:
-				print "play track directly"
-				deviceID = obj_uuid
-				
-				print 'event map status ' + getEventmapStatus(deviceID)
-				currentStatus = getEventmapStatus(deviceID)
-				if( currentStatus == 'never') == True:
-					print 'never play'
-					currentStatus = updateEventmapStatus(deviceID, 'playing')
-				elif(currentStatus == 'playing') == True:
-					print 'playing'
-					currentStatus = updateEventmapStatus(deviceID, 'completed')
-				elif(currentStatus== 'completed') == True:
-					print 'paly completed note'
-				elif(currentStatus == 'skipped') == True:
-					print 'play skipped note'
-					
-				fileName = getEventMapFileName(eventmap, deviceID)
-				playFile(fileName)
-				print 'event map status ' + getEventmapStatus(deviceID)
-			else:
-				print "skip current track"
-				currentStatus = updateEventmapStatus(deviceID, 'skipped')
-				os.system('pkill mpg321')
-				deviceID = obj_uuid
-				if( currentStatus == 'never') == True:
-					print 'never play'
-					currentStatus = updateEventmapStatus(deviceID, 'playing')
-				fileName = getEventMapFileName(eventmap, obj_uuid)
-				playFile(fileName)
-		else:
-			if isProcessRunning('mpg321') == False:
+	obj['val']=value
+	result = appendBuffer(obj)
+	if mqttclnt and result:		
+		mqttclnt.publish("/lab3/ble/result/", str(result['id']))
+
+	obj_uuid = result['id']
+	
+	if (deviceID == obj_uuid) == False:
+		if isProcessRunning('mpg321') == False:
+			print "play track directly"
+			deviceID = obj_uuid
+			
+			print 'event map status ' + getEventmapStatus(deviceID)
+			currentStatus = getEventmapStatus(deviceID)
+			if( currentStatus == 'never') == True:
+				print 'never play'
+				currentStatus = updateEventmapStatus(deviceID, 'playing')
+			elif(currentStatus == 'playing') == True:
+				print 'playing'
 				currentStatus = updateEventmapStatus(deviceID, 'completed')
-		# for _data in eventmap:
+			elif(currentStatus== 'completed') == True:
+				print 'paly completed note'
+			elif(currentStatus == 'skipped') == True:
+				print 'play skipped note'
+				
+			fileName = getEventMapFileName(eventmap, deviceID)
+			playFile(fileName)
+			print 'event map status ' + getEventmapStatus(deviceID)
+		# else:
+		# 	print "skip current track"
+		# 	currentStatus = updateEventmapStatus(deviceID, 'skipped')
+		# 	os.system('pkill mpg321')
+		# 	deviceID = obj_uuid
+		# 	if( currentStatus == 'never') == True:
+		# 		print 'never play'
+		# 		currentStatus = updateEventmapStatus(deviceID, 'playing')
+		# 	fileName = getEventMapFileName(eventmap, obj_uuid)
+		# 	playFile(fileName)
+	else:
+		if isProcessRunning('mpg321') == False:
+			currentStatus = updateEventmapStatus(deviceID, 'completed')
 
-		#     if(_data[key_uuid] == obj['id']):
-		#         # before that udpate status
-		#         deviceID = obj['id']
-		#         print _data
-		#         print _data['status']
-		#         # check played? check skipped?
-		#         # do something
+def init():
+	"""Read config file"""
+	ret = {}
+	config = ConfigParser.ConfigParser()
+	config.read("config")
+	global DEBUG
+	DEBUG = True if int(config.get('Result', 'debug')) == 1 else False
+	ret["url"]       = config.get('MQTT', 'url')
+	ret["port"]      = int(config.get('MQTT', 'port'))
+	ret["keepalive"] = int(config.get('MQTT', 'keepalive'))
+	ret["result_id"]  = config.get('Result', 'result_id')
+	return ret
 
-	# if (deviceID == obj['id']) == False :
-	# 	if isProcessRunning('mpg321') == False:
-	# 		deviceID = obj['id']
-	# 	if deviceID == "fc:ac:48:93:85:07":
-	# 		print("do this>>>>>>>>>");
-	# 		if isProcessRunning('mpg321') == False:
-	# 			os.system('mpg321 /home/pi/example/mp3s/Chapter_1.mp3 &')
-	# 		# play mp3s/chapter1
-	# 		##do this
-	# 	elif deviceID == "e6:04:aa:bd:67:d2":
-	# 		print("do that---------");
-	# 		if isProcessRunning('mpg321') == False:
-	# 			os.system('mpg321 /home/pi/example/mp3s/Chapter_2.mp3 &')
-	# 		#do that
-	# 		# play mp3s/chapter3
+def onConnect(client, userdata, rc):
+	"""MQTT onConnect handler"""
+	print("Connected to broker: " + str(rc))
 
-client = mqtt.Client()
-client.on_connect = on_connect
-client.on_message = on_message
+def initMQTT(url = "localhost", port = 1883, keepalive = 60):
+	"""Init MQTT connection"""
+	client = mqtt.Client()
+	client.on_connect = onConnect
+	try:
+		client.connect(url, port, keepalive)
+		client.loop_start()
+		return client
+	except Exception, e:
+		print(e)
+		return None
 
-client.connect("localhost", 1883, 60)
+if __name__ == '__main__':
+	conf = init()
+	mqttclnt = initMQTT(conf["url"], conf["port"], conf["keepalive"])
 
-# Blocking call that processes network traffic, dispatches callbacks and
-# handles reconnecting.
-# Other loop*() functions are available that give a threaded interface and a
-# manual interface.
-client.loop_forever()
+	client = mqtt.Client()
+	client.on_connect = on_connect
+	client.on_message = on_message
 
-# Non Blocking call interface
-# It starts a thread and is a more preferred method for use
-client.loop_start()
+	client.connect("localhost", 1883, 60)
+
+	# Blocking call that processes network traffic, dispatches callbacks and
+	# handles reconnecting.
+	# Other loop*() functions are available that give a threaded interface and a
+	# manual interface.
+	client.loop_forever()
+
+	# Non Blocking call interface
+	# It starts a thread and is a more preferred method for use
+	client.loop_start()
