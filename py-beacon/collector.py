@@ -35,7 +35,7 @@ def startScan(mqttclnt, filters=[], topic="/ble/rssi/"):
                 
                 for filter in filters:
                     if fields[0].startswith(filter):
-                        print filter + " : " + fields[0]
+                        # print filter + " : " + fields[0]
                         mqttclnt.publish(topic, '{"id":"%s","val":"%s"}' % (fields[0], fields[5]))
                         found = True
                         if DEBUG: print(fields[0], fields[1])
