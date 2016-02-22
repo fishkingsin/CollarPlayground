@@ -55,6 +55,7 @@ def isProcessRunning(processName):
 
 deviceID = ""
 currentStatus = ""
+checkpoint_id = 'e0:f0:81:46:9c:fc'
 # The callback for when the client receives a CONNACK response from the server.
 
 
@@ -100,19 +101,36 @@ def getEventmapStatus(input_uuid):
 	global eventmap
 	for _data in eventmap:
 		if (_data[key_uuid] == input_uuid) == True:
-			return _data['status']
+			return _data[key_status]
 	return ""
 
+def fithFloorComplete():
+	isCompleted = False;
+	fifthfloor_items = (d for d in eventmap if d['fifth'] == 'true')
+	for data in fifthfloor_items:
+		if data[key_status] == never:
+			print "5/F is not complete"
+			return False
+	print "5/F is  complete ************"
+	return True
 
 def updateEventmapStatus(input_uuid, status):
 	global eventmap
 	output_uuid = None
 	# print eventmap
-	for _data in eventmap:
-		if (_data[key_uuid] == input_uuid) == True:
-			_data['status'] = status
-			# print eventmap
-			return _data['status']
+	if input_uuid == checkpoint_id:
+		print 'special treatment'
+		if fithFloorComplete() == False:
+			_data[key_status] = never
+		else:
+			_data[key_status] = completed
+		return _data[key_status]
+	else:
+		for _data in eventmap:
+			if (_data[key_uuid] == input_uuid) == True:
+				_data[key_status] = status
+				# print eventmap
+				return _data[key_status]
 
 # def most_common(lst):
 # 	print lst
