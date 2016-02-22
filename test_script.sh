@@ -1,4 +1,4 @@
-cd /home/pi/py-beacon
+cd /home/pi/CollarPlayground/py-beacon
 echo "start beacon collactor and emitter"
 sudo python ./collector.py &
 sudo python ./emitter.py &

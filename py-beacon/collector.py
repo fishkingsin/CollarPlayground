@@ -5,6 +5,7 @@
 import ConfigParser
 import paho.mqtt.client as mqtt
 from proximity import *
+import pprint
 
 DEBUG = True
 
@@ -31,14 +32,14 @@ def startScan(mqttclnt, filters=[], topic="/ble/rssi/"):
         while True:
             for beacon in scanner.scan():
                 fields = beacon.split(",")
-
+                
                 for filter in filters:
                     if fields[0].startswith(filter):
+                        print filter + " : " + fields[0]
                         mqttclnt.publish(topic, '{"id":"%s","val":"%s"}' % (fields[0], fields[5]))
                         found = True
                         if DEBUG: print(fields[0], fields[1])
-                    if found == False:
-                        print fields[0] + 'not found in filter '
+                
 
 def init():
     """Read config file"""
@@ -50,7 +51,7 @@ def init():
     ret["url"]       = config.get('MQTT', 'url')
     ret["port"]      = int(config.get('MQTT', 'port'))
     ret["keepalive"] = int(config.get('MQTT', 'keepalive'))
-    ret["filter"]    = config.get('Scanner', 'filter')
+    ret["filter"]    = config.get('Scanner', 'filter').split(",")
     ret["topic_id"]  = config.get('Scanner', 'topic_id')
     return ret
 
