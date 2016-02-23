@@ -204,7 +204,7 @@ def on_message(client, userdata, msg):
 	# if mqttclnt and result:		
 	# 	mqttclnt.publish("/lab3/ble/result/", str(result['id']))
 	# if result:
-		obj_uuid = result['id']
+		obj_uuid = obj['id']
 		
 		if (deviceID == obj_uuid) == False:
 			if isProcessRunning('mpg321') == False:
