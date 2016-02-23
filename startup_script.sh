@@ -19,7 +19,8 @@ mpg321 /home/pi/CollarPlayground/Mac_Startup_Sound.mp3 &
 
 cd /home/pi/CollarPlayground/
 echo "sync master"
-git pull origin master
+sudo git reset --hard
+sudo git pull origin master
 sleep 1
 #mount disk if avaiable
 echo "mount /media/usb"
