@@ -10,11 +10,12 @@ from rx.subjects import Subject
 from rx import Observable, Observer
 import RPi.GPIO as GPIO
 from subprocess import call
-LIMIT = 1800000
+# LIMIT = 1800000
+LIMIT = 10000
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(16, GPIO.OUT)
 # LIMIT = 65000
-# LIMIT = 10000
+
 current_second=0
 GPIO.output(16,False)
 
@@ -44,7 +45,11 @@ class BuzzerObserver(Observer):
 				
 		def on_completed(self):
 			print("Sequence completed")
-			call(['pkill' , 'python']);
+			time.sleep(10);
+			GPIO.output(16,False)
+			GPIO.cleanup() # cleanup all GPIO
+			# call(['pkill' , 'python']);
+			# call([ 'shutdown', '-h', 'now']);
 			exit()
 stream = Subject()
 stream.subscribe(BuzzerObserver())

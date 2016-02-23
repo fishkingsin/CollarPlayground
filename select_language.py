@@ -26,6 +26,7 @@ segment.writeDigit(4,1)
 def longPressed():
     print 'long press' 
     GPIO.output(16,False)
+    GPIO.cleanup() # cleanup all GPIO 
     print 'exit'
     exit()
 def shortPressed():
