@@ -11,17 +11,21 @@ from rx import Observable, Observer
 import RPi.GPIO as GPIO
 from subprocess import call
 LIMIT = 1800000
+pwmPin=16
+dc = 95 # duty cycle (0-100) for PWM pin
 GPIO.setmode(GPIO.BCM)
-GPIO.setup(16, GPIO.OUT)
+GPIO.setup(pwmPin, GPIO.OUT)
+pwm = GPIO.PWM(pwmPin, 50)
+pwm.start(0)
 # LIMIT = 65000
 # LIMIT = 10000
 current_second=0
-GPIO.output(16,False)
+GPIO.output(pwmPin,False)
 
 def bi_time( threadName, delay):
-	GPIO.output(16,True)
+	pwm.ChangeDutyCycle(dc) #high
 	time.sleep(delay);
-	GPIO.output(16,False)
+	pwm.ChangeDutyCycle(100-dc) #low
 
 def startThread(delay):
 	try:
@@ -30,22 +34,26 @@ def startThread(delay):
 		print "Error: unable to start thread"
 	
 class BuzzerObserver(Observer):
-		def on_next(self, x):
-			if(x > 60 and x%60*5==0):
-				startThread(1);
-			elif (x < 60 and x%10==0 and x != 10):
-				startThread(1);
-			elif (x<=10):
-				startThread(0.5);
+	def on_next(self, x):
+		if(x > 60 and x%60*5==0):
+			startThread(1);
+		elif (x < 60 and x%10==0 and x != 10):
+			startThread(1);
+		elif (x<=10):
+			startThread(0.5);
+		
+		# print("Got: %s" % x)
+	def on_error(self, e):
+		print("Got error: %s" % e)
 			
-			# print("Got: %s" % x)
-		def on_error(self, e):
-			print("Got error: %s" % e)
-				
-		def on_completed(self):
-			print("Sequence completed")
-			call(['pkill' , 'python']);
-			exit()
+	def on_completed(self):
+		print("Sequence completed")
+		timer.sleep(10)
+		pwm.stop() # stop PWM
+		GPIO.cleanup() # cleanup all GPIO
+		# call(['pkill' , 'python']);
+		call([ 'shutdown', '-h', 'now']);
+		exit()
 stream = Subject()
 stream.subscribe(BuzzerObserver())
 # ===========================================================================
