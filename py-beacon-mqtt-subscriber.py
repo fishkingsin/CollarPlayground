@@ -55,7 +55,7 @@ def isProcessRunning(processName):
 
 deviceID = ""
 currentStatus = ""
-checkpoint_id = 'e0:f0:81:46:9c:fc'
+checkpoint_id = 'ff:06:e6:2d:39:0f'
 # The callback for when the client receives a CONNACK response from the server.
 
 
