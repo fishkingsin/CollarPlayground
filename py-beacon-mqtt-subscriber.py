@@ -118,19 +118,21 @@ def updateEventmapStatus(input_uuid, status):
 	global eventmap
 	output_uuid = None
 	# print eventmap
-	if input_uuid == checkpoint_id:
-		print 'special treatment'
-		if fithFloorComplete() == False:
-			_data[key_status] = never
-		else:
-			_data[key_status] = completed
-		return _data[key_status]
-	else:
-		for _data in eventmap:
-			if (_data[key_uuid] == input_uuid) == True:
-				_data[key_status] = status
-				# print eventmap
-				return _data[key_status]
+	
+	
+	
+	for _data in eventmap:
+		if _data[key_uuid] == input_uuid == checkpoint_id:
+			print 'special treatment'
+			if fithFloorComplete() == False:
+				_data[key_status] = never
+			else:
+				_data[key_status] = completed
+			return _data[key_status]
+		elif (_data[key_uuid] == input_uuid) == True:
+			_data[key_status] = status
+			# print eventmap
+			return _data[key_status]
 
 # def most_common(lst):
 # 	print lst
