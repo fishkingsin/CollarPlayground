@@ -200,10 +200,10 @@ def on_message(client, userdata, msg):
 	
 	value=float(obj['val'])
 	obj['val']=value
-	result = appendBuffer(obj)
-	if mqttclnt and result:		
-		mqttclnt.publish("/lab3/ble/result/", str(result['id']))
-	if result:
+	# result = appendBuffer(obj)
+	# if mqttclnt and result:		
+	# 	mqttclnt.publish("/lab3/ble/result/", str(result['id']))
+	# if result:
 		obj_uuid = result['id']
 		
 		if (deviceID == obj_uuid) == False:
