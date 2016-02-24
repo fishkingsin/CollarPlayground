@@ -10,10 +10,11 @@ from rx.subjects import Subject
 from rx import Observable, Observer
 import RPi.GPIO as GPIO
 from subprocess import call
-LIMIT = 1800000
-# LIMIT = 10000
+# LIMIT = 1800000
+LIMIT = 10000
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(16, GPIO.OUT)
+GPIO.setup(18, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 # LIMIT = 65000
 
 current_second=0
@@ -26,9 +27,9 @@ def bi_time( threadName, delay):
 		GPIO.output(16,True)
 		time.sleep(10);
 		GPIO.output(16,False)
-		GPIO.cleanup() # cleanup all GPIO
+		
 		call(['mpg321', './mp3/XEX_ifva_Speech_Time.mp3' ,'&'])
-		# call([ 'shutdown', '-h', 'now']);
+		call([ 'shutdown', '-h', 'now']);
 		exit()
 	else :
 		GPIO.output(16,True)
@@ -67,6 +68,15 @@ currentmillis = 0
 # print "Press CTRL+Z to exit"
 startmillis = int(round(time.time() * 1000))
 # Continually update the time on a 4 char, 7-segment display
+pressed = False
+pressStartmillis = 0
+def longPressed():
+	print 'long press' 
+	GPIO.cleanup() # cleanup all GPIO 
+	call(['mpg321','./mp3/XEX_ifva_Speech_Bye.mp3'])
+	# call(['sudo' , 'shutdown', '-h', 'now'])
+	exit()
+
 while(True):
 	if(currentmillis<startmillis+LIMIT):
 		currentmillis = int(round(time.time() * 1000))
@@ -100,4 +110,24 @@ while(True):
 			stream.on_completed();
 			# startmillis = currentmillis;
 
-		time.sleep(0.01)
+		
+	input_state = GPIO.input(18)
+	if input_state == False:
+		if(pressed == False):
+			pressStartmillis = time.time()*1000
+		pressed = True;
+		
+		# time.sleep(0.2)
+		
+	else:
+		if(pressed):
+			pressCurrentmillis = time.time()*1000
+			diff  = (pressCurrentmillis - pressStartmillis)/1000.0
+			print diff
+			if( diff > 3 ):
+				longPressed()
+			elif ( diff > 0 and diff <2  ):
+				shortPressed()
+			pressed = False;
+
+	time.sleep(0.01)
