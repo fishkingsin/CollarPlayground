@@ -119,7 +119,8 @@ def fithFloorComplete():
 	return True
 def allCompleted():
 	incompleteItem = (d for d in eventmap if d['status'] == never)
-	return (incompleteItem == None)
+	log('allCompleted','===========================================')
+	return (sum(1 for _ in incompleteItem)==0)
 def updateEventmapStatus(input_uuid, status):
 	global eventmap
 	output_uuid = None
@@ -217,7 +218,7 @@ def on_message(client, userdata, msg):
 			log( "on_message", "play track directly")
 			deviceID = obj_uuid
 			if allCompleted():
-				call(['mpg321', './mp3/XEX_ifva_Speech_Finish.mp3'])
+				playFile('./mp3/XEX_ifva_Speech_Finish.mp3')
 				exit()
 			else:
 				log( "on_message", 'event map status ' + getEventmapStatus(deviceID))
@@ -229,7 +230,9 @@ def on_message(client, userdata, msg):
 					log( "on_message", 'playing')
 					currentStatus = updateEventmapStatus(deviceID, 'completed')
 				elif(currentStatus== 'completed') == True:
+					currentStatus = updateEventmapStatus(deviceID, skipped)
 					log( "on_message", 'paly completed note')
+					return
 				elif(currentStatus == 'skipped') == True:
 					log( "on_message", 'play skipped note')
 					
@@ -256,6 +259,7 @@ def init():
 	config = ConfigParser.ConfigParser()
 	config.read("config")
 	global DEBUG
+	print 'debug = '+config.get('Result', 'debug')
 	DEBUG = True if int(config.get('Result', 'debug')) == 1 else False
 	ret["url"]       = config.get('MQTT', 'url')
 	ret["port"]      = int(config.get('MQTT', 'port'))

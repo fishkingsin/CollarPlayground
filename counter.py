@@ -20,9 +20,20 @@ current_second=0
 GPIO.output(16,False)
 
 def bi_time( threadName, delay):
-	GPIO.output(16,True)
-	time.sleep(delay);
-	GPIO.output(16,False)
+	if delay == 10:
+		print("Sequence completed")
+		time.sleep(2);
+		GPIO.output(16,True)
+		time.sleep(10);
+		GPIO.output(16,False)
+		GPIO.cleanup() # cleanup all GPIO
+		call(['mpg321', './mp3/XEX_ifva_Speech_Time.mp3' ,'&'])
+		# call([ 'shutdown', '-h', 'now']);
+		exit()
+	else :
+		GPIO.output(16,True)
+		time.sleep(delay);
+		GPIO.output(16,False)
 
 def startThread(delay):
 	try:
@@ -44,54 +55,49 @@ class BuzzerObserver(Observer):
 			print("Got error: %s" % e)
 				
 		def on_completed(self):
-			print("Sequence completed")
-			time.sleep(10);
-			GPIO.output(16,False)
-			GPIO.cleanup() # cleanup all GPIO
-			call(['mpg321', './mp3/XEX_ifva_Speech_Time.mp3'])
-			call(['./end_script.sh'])
-			# call([ 'shutdown', '-h', 'now']);
-			exit()
+			startThread(10);
+			
 stream = Subject()
 stream.subscribe(BuzzerObserver())
 # ===========================================================================
 # Clock Example
 # ===========================================================================
 segment = SevenSegment(address=0x70)
-
-print "Press CTRL+Z to exit"
+currentmillis = 0
+# print "Press CTRL+Z to exit"
 startmillis = int(round(time.time() * 1000))
 # Continually update the time on a 4 char, 7-segment display
 while(True):
-	currentmillis = int(round(time.time() * 1000))
-	# now = datetime.datetime.now()
-	# hour = now.hour
-	diff = LIMIT-int(currentmillis - startmillis)
-	second = diff/1000
-	minute = second/60
-	if(current_second!=second):
-		stream.on_next(second)
-		current_second=second
-	if(minute>0):
-		segment.writeDigit(0, int(minute / 10))     # Tens
-		segment.writeDigit(1, minute % 10)          # Ones
-		# Set minutes
+	if(currentmillis<startmillis+LIMIT):
+		currentmillis = int(round(time.time() * 1000))
+		# now = datetime.datetime.now()
+		# hour = now.hour
+		diff = LIMIT-int(currentmillis - startmillis)
+		second = diff/1000
+		minute = second/60
+		if(current_second!=second):
+			stream.on_next(second)
+			current_second=second
+		if(minute>0):
+			segment.writeDigit(0, int(minute / 10))     # Tens
+			segment.writeDigit(1, minute % 10)          # Ones
+			# Set minutes
 
-		segment.writeDigit(3, int(second % 60 / 10 ))   # Tens
-		segment.writeDigit(4, second % 60 % 10)        # Ones
+			segment.writeDigit(3, int(second % 60 / 10 ))   # Tens
+			segment.writeDigit(4, second % 60 % 10)        # Ones
+			
+		else:
+			segment.writeDigit(0, int((diff / 1000)/10))    # Tens
+			segment.writeDigit(1, int((diff / 1000)%10))          # Ones
+			
+			segment.writeDigit(3, int(diff / 100)%10 )   # Tens
+			segment.writeDigit(4, int(diff % 10 ) )        # Ones
+		# Toggle colon
+		segment.setColon(second % 2)              # Toggle colon at 1Hz
 		
-	else:
-		segment.writeDigit(0, int((diff / 1000)/10))    # Tens
-		segment.writeDigit(1, int((diff / 1000)%10))          # Ones
-		
-		segment.writeDigit(3, int(diff / 100)%10 )   # Tens
-		segment.writeDigit(4, int(diff % 10 ) )        # Ones
-	# Toggle colon
-	segment.setColon(second % 2)              # Toggle colon at 1Hz
-	
-	if(currentmillis>startmillis+LIMIT):
-		# should fire timeout
-		stream.on_completed();
-		# startmillis = currentmillis;
+		if(currentmillis>startmillis+LIMIT):
+			# should fire timeout
+			stream.on_completed();
+			# startmillis = currentmillis;
 
-	time.sleep(0.01)
+		time.sleep(0.01)
