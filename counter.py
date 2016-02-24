@@ -10,8 +10,8 @@ from rx.subjects import Subject
 from rx import Observable, Observer
 import RPi.GPIO as GPIO
 from subprocess import call
-# LIMIT = 1800000
-LIMIT = 10000
+LIMIT = 1800000
+# LIMIT = 10000
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(16, GPIO.OUT)
 GPIO.setup(18, GPIO.IN, pull_up_down=GPIO.PUD_UP)
