@@ -165,7 +165,7 @@ def most_common(L):
 	averageMax = max(result, key=lambda x:x['avg'])
 	log( "most_common","============averageMax============")
 	log( "most_common", averageMax["id"] + " | avg: " + str(averageMax["avg"]))
-	log( "most_common",print "============averageMax============")
+	log( "most_common","============averageMax============")
 	return averageMax
 
 def appendBuffer(input_uuid):
