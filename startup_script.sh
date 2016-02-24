@@ -50,3 +50,4 @@ sudo python select_language.py
 echo 'start the game'
 python py-beacon-mqtt-subscriber.py &
 sudo python counter.py &
+sudo python shutdown_script.py &

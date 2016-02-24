@@ -17,7 +17,7 @@ def longPressed():
     GPIO.output(16,False)
     GPIO.cleanup() # cleanup all GPIO 
     call(['mpg321','./mp3/XEX_ifva_Speech_Bye.mp3'])
-    # call(['sudo' , 'shutdown', '-h', 'now'])
+    call(['sudo' , 'shutdown', '-h', 'now'])
     exit()
 
 while True:
