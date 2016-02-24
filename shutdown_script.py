@@ -6,7 +6,7 @@ from subprocess import call
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(18, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-GPIO.setup(16, GPIO.OUT)
+
 index = 0;
 startmillis = int(round(time.time()))
 pressed = False
@@ -14,7 +14,6 @@ pressed = False
 
 def longPressed():
     print 'long press' 
-    GPIO.output(16,False)
     GPIO.cleanup() # cleanup all GPIO 
     call(['mpg321','./mp3/XEX_ifva_Speech_Bye.mp3'])
     call(['sudo' , 'shutdown', '-h', 'now'])
@@ -28,7 +27,7 @@ while True:
         pressed = True;
         
         time.sleep(0.2)
-        GPIO.output(16,True)
+        
     else:
         if(pressed):
             currentmillis = time.time()*1000
@@ -39,7 +38,7 @@ while True:
             elif ( diff > 0 and diff <2  ):
                 shortPressed()
             pressed = False;
-        GPIO.output(16,False)
+        
 
     
     
