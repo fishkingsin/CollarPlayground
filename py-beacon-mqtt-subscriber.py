@@ -47,7 +47,7 @@ def findProcess(processName):
 
 def isProcessRunning(processName):
 	output = findProcess(processName)
-	# print "isProcessRunning : " +output
+	print "isProcessRunning : " +output
 	if output.find(processName) != -1:
 		return True
 	else:
@@ -113,7 +113,9 @@ def fithFloorComplete():
 			return False
 	print "5/F is  complete ************"
 	return True
-
+def allCompleted():
+	incompleteItem = (d for d in eventmap if d['status'] == 'never')
+	return (incompleteItem == None)
 def updateEventmapStatus(input_uuid, status):
 	global eventmap
 	output_uuid = None
@@ -207,26 +209,29 @@ def on_message(client, userdata, msg):
 	obj_uuid = obj['id']
 	
 	if (deviceID == obj_uuid) == False:
+		print "new id "+ obj_uuid
 		if isProcessRunning('mpg321') == False:
 			print "play track directly"
 			deviceID = obj_uuid
-			
-			print 'event map status ' + getEventmapStatus(deviceID)
-			currentStatus = getEventmapStatus(deviceID)
-			if( currentStatus == 'never') == True:
-				print 'never play'
-				currentStatus = updateEventmapStatus(deviceID, 'playing')
-			elif(currentStatus == 'playing') == True:
-				print 'playing'
-				currentStatus = updateEventmapStatus(deviceID, 'completed')
-			elif(currentStatus== 'completed') == True:
-				print 'paly completed note'
-			elif(currentStatus == 'skipped') == True:
-				print 'play skipped note'
-				
-			fileName = getEventMapFileName(eventmap, deviceID)
-			playFile(fileName)
-			print 'event map status ' + getEventmapStatus(deviceID)
+			if allCompleted():
+				call(['mpg321', './mp3/XEX_ifva_Speech_Finish.mp3'])
+			else:
+				print 'event map status ' + getEventmapStatus(deviceID)
+				currentStatus = getEventmapStatus(deviceID)
+				if( currentStatus == 'never') == True:
+					print 'never play'
+					currentStatus = updateEventmapStatus(deviceID, 'playing')
+				elif(currentStatus == 'playing') == True:
+					print 'playing'
+					currentStatus = updateEventmapStatus(deviceID, 'completed')
+				elif(currentStatus== 'completed') == True:
+					print 'paly completed note'
+				elif(currentStatus == 'skipped') == True:
+					print 'play skipped note'
+					
+				fileName = getEventMapFileName(eventmap, deviceID)
+				playFile(fileName)
+				print 'event map status ' + getEventmapStatus(deviceID)
 		# else:
 		# 	print "skip current track"
 		# 	currentStatus = updateEventmapStatus(deviceID, 'skipped')

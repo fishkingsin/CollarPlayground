@@ -48,7 +48,8 @@ class BuzzerObserver(Observer):
 			time.sleep(10);
 			GPIO.output(16,False)
 			GPIO.cleanup() # cleanup all GPIO
-			call(['pkill' , 'python']);
+			call(['mpg321', './mp3/XEX_ifva_Speech_Time.mp3'])
+			call(['./end_script.sh'])
 			# call([ 'shutdown', '-h', 'now']);
 			exit()
 stream = Subject()

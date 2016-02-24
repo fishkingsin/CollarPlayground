@@ -15,7 +15,7 @@ done
 sleep 1
 
 #startup jingle
-mpg321 /home/pi/CollarPlayground/Mac_Startup_Sound.mp3 &
+mpg321 /home/pi/CollarPlayground/XEX_ifva_Speech_Startup.mp3 &
 
 cd /home/pi/CollarPlayground/
 echo "sync master"
