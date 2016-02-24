@@ -13,7 +13,7 @@ do
 	sleep 1
 done
 sleep 1
-
+amixer cset numid=1 98%, 98%
 #startup jingle
 mpg321 /home/pi/CollarPlayground/XEX_ifva_Speech_Startup.mp3 &
 
