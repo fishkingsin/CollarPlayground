@@ -118,7 +118,7 @@ def fithFloorComplete():
 	# print "5/F is  complete ************"
 	return True
 def allCompleted():
-	incompleteItem = (d for d in eventmap if d['status'] == 'never')
+	incompleteItem = (d for d in eventmap if d['status'] == never)
 	return (incompleteItem == None)
 def updateEventmapStatus(input_uuid, status):
 	global eventmap
@@ -218,6 +218,7 @@ def on_message(client, userdata, msg):
 			deviceID = obj_uuid
 			if allCompleted():
 				call(['mpg321', './mp3/XEX_ifva_Speech_Finish.mp3'])
+				exit()
 			else:
 				log( "on_message", 'event map status ' + getEventmapStatus(deviceID))
 				currentStatus = getEventmapStatus(deviceID)
