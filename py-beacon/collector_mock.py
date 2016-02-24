@@ -78,4 +78,4 @@ def init():
 if __name__ == '__main__':
     conf = init()
     clnt = initMQTT(conf["url"], conf["port"], conf["keepalive"])
-    startScan(clnt, conf["filter"], conf["topic_id"])
+    startScan(clnt, conf["filter"], "/lab3/ble/nearest/")
