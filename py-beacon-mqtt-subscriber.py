@@ -31,6 +31,10 @@ circularBuffer = collections.deque(maxlen=MAX_LENGTH)
 appendCount=0
 mqttclnt = None
 conf = []
+DEBUG = True
+def log(TAG, msg):
+	if DEBUG:
+		print TAG +" : "+msg
 with open('eventmap.json') as data_file:
 	eventmap = json.load(data_file)
 
@@ -47,7 +51,7 @@ def findProcess(processName):
 
 def isProcessRunning(processName):
 	output = findProcess(processName)
-	print "isProcessRunning : " +output
+	# print "isProcessRunning : " +output
 	if output.find(processName) != -1:
 		return True
 	else:
@@ -82,18 +86,18 @@ def getEventMapFileName(eventmap, input_uuid):
 			else:
 				fileName = _data[key_files][0][key_fileName]
 			
-			print "playing file " + fileName
+			log( "playing file " , fileName )
 	return fileName
 
 
 def playFile(filePath):
-	print filePath
+	log( "PlayFile" , filePath)
 	if(os.path.isfile(filePath))==True:
 		cmd = 'mpg321 ' + filePath + ' &'
-		print cmd
+		log( "PlayFile", cmd)
 		os.system(cmd)
 	else :
-		print "error open file :"+filePath
+		log( "PlayFile", "error open file :"+filePath)
 
 
 
@@ -109,9 +113,9 @@ def fithFloorComplete():
 	fifthfloor_items = (d for d in eventmap if d['fifth'] == 'true')
 	for data in fifthfloor_items:
 		if data[key_status] == never:
-			print "5/F is not complete"
+			# print "5/F is not complete"
 			return False
-	print "5/F is  complete ************"
+	# print "5/F is  complete ************"
 	return True
 def allCompleted():
 	incompleteItem = (d for d in eventmap if d['status'] == 'never')
@@ -125,7 +129,7 @@ def updateEventmapStatus(input_uuid, status):
 	
 	for _data in eventmap:
 		if _data[key_uuid] == input_uuid == checkpoint_id:
-			print 'special treatment'
+			log( "updateEventmapStatus", 'special treatment')
 			if fithFloorComplete() == False:
 				_data[key_status] = never
 			else:
@@ -159,9 +163,9 @@ def most_common(L):
 		result.append(temp_dict)
 
 	averageMax = max(result, key=lambda x:x['avg'])
-	print "============averageMax============"
-	print averageMax["id"] + " | avg: " + str(averageMax["avg"])
-	print "============averageMax============"
+	log( "most_common","============averageMax============")
+	log( "most_common", averageMax["id"] + " | avg: " + str(averageMax["avg"]))
+	log( "most_common",print "============averageMax============")
 	return averageMax
 
 def appendBuffer(input_uuid):
@@ -180,11 +184,10 @@ def appendBuffer(input_uuid):
 		appendCount=0
 		# output_uuid = circularBuffer
 		
-		print '====================================='
 		output_uuid = most_common(circularBuffer)
 		# print '---->>>>>>>>>>>>>>> : '
 		# pprint(result)
-		print '====================================='
+		
 		circularBuffer.clear()
 	return output_uuid
 
@@ -209,29 +212,29 @@ def on_message(client, userdata, msg):
 	obj_uuid = obj['id']
 	
 	if (deviceID == obj_uuid) == False:
-		print "new id "+ obj_uuid
+		log( "on_message","new id "+ obj_uuid)
 		if isProcessRunning('mpg321') == False:
-			print "play track directly"
+			log( "on_message", "play track directly")
 			deviceID = obj_uuid
 			if allCompleted():
 				call(['mpg321', './mp3/XEX_ifva_Speech_Finish.mp3'])
 			else:
-				print 'event map status ' + getEventmapStatus(deviceID)
+				log( "on_message", 'event map status ' + getEventmapStatus(deviceID))
 				currentStatus = getEventmapStatus(deviceID)
 				if( currentStatus == 'never') == True:
-					print 'never play'
+					log( "on_message", 'never play')
 					currentStatus = updateEventmapStatus(deviceID, 'playing')
 				elif(currentStatus == 'playing') == True:
-					print 'playing'
+					log( "on_message", 'playing')
 					currentStatus = updateEventmapStatus(deviceID, 'completed')
 				elif(currentStatus== 'completed') == True:
-					print 'paly completed note'
+					log( "on_message", 'paly completed note')
 				elif(currentStatus == 'skipped') == True:
-					print 'play skipped note'
+					log( "on_message", 'play skipped note')
 					
 				fileName = getEventMapFileName(eventmap, deviceID)
 				playFile(fileName)
-				print 'event map status ' + getEventmapStatus(deviceID)
+				log( "on_message", 'event map status ' + getEventmapStatus(deviceID))
 		# else:
 		# 	print "skip current track"
 		# 	currentStatus = updateEventmapStatus(deviceID, 'skipped')
@@ -261,7 +264,7 @@ def init():
 
 def onConnect(client, userdata, rc):
 	"""MQTT onConnect handler"""
-	print("Connected to broker: " + str(rc))
+	log( "onConnect",("Connected to broker: " + str(rc)))
 
 def initMQTT(url = "localhost", port = 1883, keepalive = 60):
 	"""Init MQTT connection"""
@@ -272,7 +275,7 @@ def initMQTT(url = "localhost", port = 1883, keepalive = 60):
 		client.loop_start()
 		return client
 	except Exception, e:
-		print(e)
+		log( "initMQTT",e)
 		return None
 
 if __name__ == '__main__':
