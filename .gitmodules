@@ -1,0 +1,3 @@
+[submodule "py-beacon"]
+	path = py-beacon
+	url = https://github.com/taka-wang/py-beacon.git
