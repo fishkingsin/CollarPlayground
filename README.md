@@ -1,1 +1,3 @@
 # CollarPlayground
+
+All Rights Reserved
